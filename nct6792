@@ -1,0 +1,136 @@
+# ASRock b450 itx
+chip "nct6792-isa-0290"
+
+# Use sensors -u to get options
+
+    # Fans
+
+    label fan1 "Case"
+	set fan1_min 200
+	
+    label fan2 "CPU"
+	set fan2_min 1000
+
+    ignore fan3
+    ignore fan4 
+    ignore fan5
+
+
+    # Temperatures
+
+    label temp1 "SYSTIN"
+	set temp1_type 4
+	compute temp1 ((@-150)*-1)*2,((@/2)*-1)+150
+	set temp1_max 90
+    	set temp1_max_hyst 85
+
+    label temp2 "CPUTIN"
+	set temp2_type 4
+	compute temp2 @+100,@-100
+	set temp2_max 80
+	set temp2_max_hyst 75
+
+    label temp3 "AUXTIN0"
+	set temp3_type 4
+	compute temp3 @*2,@/2
+	set temp3_max 80
+	set temp3_max_hyst 75
+
+    label temp4 "AUXTIN1"
+	set temp4_type 4
+	compute temp4 ((@-150)*-1)*2,((@/2)*-1)+150
+
+    label temp5 "AUXTIN2"
+	set temp5_type 4
+	compute temp5 @-51,@+51
+
+    ignore temp6
+    ignore temp7
+    ignore temp8
+    ignore temp9
+    ignore temp10
+
+    # Voltages
+
+    # Most voltages for PSU set according to ATX v2.2 spec of +/- 5% on the following:
+    # +3.3VDC	± 5%	+3.135 VDC	+3.465 VDC
+    # +5VDC	± 5%	+4.750 VDC	+5.250 VDC
+    # +5VSB 	± 5%	+4.750 VDC	+5.250 VDC
+    # -5VDC     ± 10%	-4.500 VDC	-5.500 VDC
+    # +12VDC	± 5%	+11.400 VDC	+12.600 VDC
+    # -12VDC	± 10%	-10.800 VDC	-13.200 VDC
+    
+    #CPU Core SVI2 VRM
+    label in0 "CPU Core" 
+    	compute in0 @*2, @/2
+    	set in0_min 0.54
+    	set in0_max 1.45
+
+    ignore in1
+
+    # AVCC
+    label in2 "AVCC"
+    	set in2_min 3.30 * 0.95
+    	set in2_max 3.30 * 1.05
+
+    # 3VDCC
+    label in3 "3VCC"
+    	set in3_min 3.30 * 0.95
+    	set in3_max 3.30 * 1.05
+    
+    ignore in4
+    ignore in5
+
+    label in6 "?"
+    
+    # 3VSB
+    label in7 "3VSB"
+    	set in7_min 3.35
+    	set in7_max 3.50
+
+    # vBat
+    label in8 "vBat"
+    	set in8_min 3.00
+    	set in8_max 3.35
+
+    # +1.8V
+    label in9 "+1.8v"
+    	set in9_min 1.8 * 0.98
+    	set in9_max 1.8 * 1.05
+
+    label in10 "?"
+    	compute in10 @*4, @/4
+
+    label in11 "?"
+	compute in11 @*4, @/4
+    
+    # +12VDC
+    label in12 "+12v"
+    	compute in12 ((56/10)+1)*@, @/((56/10)+1)
+    	set in12_min 12 * 0.95
+    	set in12_max 12 * 1.05
+
+    # +5V
+    label in13 "+5v"
+    	compute in13 ((20/10)+1)*@, @/((20/10)+1)
+    	set in13_min 5 * 0.95
+    	set in13_max 5 * 1.05
+
+    ignore in14
+
+    # Compute Inputs
+    # The nct6779D uses a 2.048V input range, all inputs above that are scaled using a voltage divider.
+    # Specific inputs like the ADC, AVCC, VBAT, 3VSB and 3VCC utilize an integrated voltage divider 
+    
+    # values as per nuvoton nct6779D datasheet
+    # Section 8.5 Analog Inputs (Page 54,55)
+    # #       		Vs     R1,Rin   R2,Rf   Vin
+    # (+12V) in12  	+12.0  56       10     ~+1.84
+    # (+5V) in13  	+5.0   20       10     ~+1.67
+    
+   
+    # Things to filter
+    # These inputs are unused unless you have a case intrusion switch connected.
+
+    ignore intrusion0
+    ignore intrusion1
